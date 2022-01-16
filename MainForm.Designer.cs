@@ -136,7 +136,7 @@
             this.diriginte.Name = "diriginte";
             this.diriginte.Size = new System.Drawing.Size(157, 20);
             this.diriginte.TabIndex = 9;
-            this.diriginte.Text = "Viziteu Emanuela";
+            this.diriginte.Text = "numeprof";
             // 
             // label6
             // 
