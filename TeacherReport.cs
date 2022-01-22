@@ -24,17 +24,17 @@ namespace ProcesareFeedback
         public string NRFEEDBACK; //numarul de elevi care au acordat feedback
 
         //cele mai lungi doua mesaje din lista de mesaje
-        public string DORINTA1;
-        public string DORINTA2;
+        public List<string> DORINTE;
 
         //cele mai lungi doua mesaje pentru profesor din lista de mesaje
-        public string MESAJ1;
-        public string MESAJ2;
+        public List<string> MESAJE;
+
 
         //procentul de participare al elevilor
         public string PROCENTPARTICIPARE;
 
         public int[,] numere = new int[16, 5];
+        public List<string> intrebari;
 #pragma warning restore CS0649, 0649
 
         private int index = 0;
@@ -45,6 +45,7 @@ namespace ProcesareFeedback
             return index;
         }
 
+        //inlocuitor pentru IENUMERATOR cu yield return
         private int numIndex = 0;
         public int GetNumValue()
         {
@@ -55,6 +56,14 @@ namespace ProcesareFeedback
             int res = to[numIndex];
             numIndex++;
             return res;
+        }
+
+        private int questionIndex = 0;
+        public string GetQuestion()
+        {
+            string q = intrebari[questionIndex].Trim().Trim(new char[] { '[', ']' });
+            questionIndex++;
+            return q;
         }
     }
 }

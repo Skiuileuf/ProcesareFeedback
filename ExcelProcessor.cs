@@ -15,7 +15,14 @@ namespace ProcesareFeedback
         public ExcelProcessor(string Path)
         {
             //this.Path = Path;
-            WorkBook = new XLWorkbook(Path);
+            try
+            {
+                WorkBook = new XLWorkbook(Path);
+            } catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message);
+                return;
+            }
             WorkSheet = WorkBook.Worksheets.First();
         }
 
@@ -51,28 +58,6 @@ namespace ProcesareFeedback
             }
             return current - 1;
         }
-
-        //public Range GetHeader()
-        //{
-        //    return WorkSheet.Range[WorkSheet.Cells[1,1], WorkSheet.Cells[1,GetWidth(1)]];
-        //}
-
-        //public string[,] ReadRange(int startRow, int startCol, int endRow, int endCol)
-        //{
-        //    Range range = (Range)WorkSheet.Range[WorkSheet.Cells[startRow, startCol], WorkSheet.Cells[endRow, endCol]];
-        //    object[,] holder = range.Value2;
-        //    string[,] returnstring = new string[endRow - startRow, endCol - startCol];
-        //    for(int i = 1; i <= endRow - startRow; i++)
-        //    {
-        //        for(int j = 1; j <= endCol - startCol; j++)
-        //        {
-        //            returnstring[i - 1, j - 1] = holder[i, j].ToString();
-        //        }
-        //    }
-        //    return returnstring;
-
-        //}
-
 
         ~ExcelProcessor()
         {

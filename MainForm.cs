@@ -14,14 +14,14 @@ namespace ProcesareFeedback
 {
     public partial class MainForm : Form
     {
-        //public static TeacherReport BaseReport;
-
         public MainForm()
         {
             InitializeComponent();
         }
 
         public string ExcelPath;
+        public string TemplatePath;
+        public string SavePath;
 
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -40,23 +40,18 @@ namespace ProcesareFeedback
 
         private void generateButton_Click(object sender, EventArgs e)
         {
-            //BaseReport = new TeacherReport
-            //{
-            //    NCLASA = nclasa.Text,
-            //    LCLASA = lclasa.Text,
-            //    ANSCOLAR = anscolar.Text,
-            //    SEMESTRU = semestru.Text,
-            //    NRELEVI = nrelevi.Text,
-            //    DIRIGINTE = diriginte.Text
-            //};
-
             ExcelProcessor ep = new ExcelProcessor(ExcelPath);
 
+            //Make a list of all the records parsed from the excel file
             List<FeedbackRecord> records = new List<FeedbackRecord>();
+            //Sorteaza o lista de valori unice ca sa stim cate discipline avem
             SortedSet<string> discipline = new SortedSet<string>();
 
-            //Obtine latimea foii de calcul. TODO latime constanta?
-            //int Width = ep.GetWidth(1);
+            List<string> intrebari = new List<string>();
+            for(int i = 3; i <= 18; i++)
+            {
+                intrebari.Add(ep.WorkSheet.Cell(1, i).GetString());
+            }
 
             //Pentru fiecare rand in afara de header genereaza un obiect care stocheaza feedbackul
             for (int i = 2; i <= ep.GetHeigth(1); i++)
@@ -80,47 +75,51 @@ namespace ProcesareFeedback
                 discipline.Add(record.Disciplina);
             }
 
-            //MessageBox.Show(records.Count.ToString());
-
 
             //Pentru fiecare materie diferita
             foreach (string disciplina in discipline)
             {
-                TeacherReport report = new TeacherReport()//BaseReport);
+                //Genereaza un raport nou care porneste de la parametri prestabiliti
+                TeacherReport report = new TeacherReport()
                 {
                     NCLASA = nclasa.Text,
                     LCLASA = lclasa.Text,
                     ANSCOLAR = anscolar.Text,
                     SEMESTRU = semestru.Text,
                     NRELEVI = nrelevi.Text,
-                    DIRIGINTE = diriginte.Text
+                    DIRIGINTE = diriginte.Text,
+                    intrebari = intrebari
                 };
 
-
+                //Selecteaza toate inregistrarile pentru o anumita disciplina
                 List<FeedbackRecord> localRecords = records.Where(rd => rd.Disciplina.Equals(disciplina)).ToList();
+
+                //Liste pentru dorinte si mesaje
                 List<string> dorinte = new List<string>();
                 List<string> mesaje = new List<string>();
 
+                //Dictionar pentru prezenta, contorizeaza procentul de elevi prezenti TODO: varianta mai eficienta??
                 Dictionary<string, int> prezenta = new Dictionary<string, int>();
 
-
+                //Preia datele care sunt valabile pentru toate inregistrarile
                 report.NRFEEDBACK = localRecords.Count().ToString();
                 report.PROFESOR = localRecords.First().Profesor;
                 report.DISCIPLINA = localRecords.First().Disciplina;
 
-                report.DORINTA1 = report.DORINTA2 = report.MESAJ1 = report.MESAJ2 = "PLACEHOLDER MESAJ";
-
-                report.PROCENTPARTICIPARE = "PROCENT PARTICIPARE PESTE 9000";
-
                 foreach(FeedbackRecord rec in localRecords)
                 {
+                    //centralizeaza notele pentru fiecare profesor
+                    //TODO: explicatie algoritm
                     for (int i = 0; i < rec.Raspunsuri.Length; i++)
                     {
                         report.numere[i, rec.Raspunsuri[i] - 1]++;
                     }
-                    dorinte.Add(rec.Dorinta);
-                    mesaje.Add(rec.Mesaj);
 
+                    //Adauga dorintele si mesajele la liste
+                    if (rec.Dorinta.Length > 3) dorinte.Add(rec.Dorinta.Trim());
+                    if (rec.Mesaj.Length > 3) mesaje.Add(rec.Mesaj.Trim());
+
+                    //Proceseaza prezenta.
                     if (prezenta.ContainsKey(rec.Prezenta))
                     {
                         prezenta[rec.Prezenta]++;
@@ -130,26 +129,54 @@ namespace ProcesareFeedback
                     }
                 }
 
+                //Sorteaza dorintele si mesajele
                 IOrderedEnumerable<string> dorinteSortate = dorinte.OrderBy(x => x.Length);
                 IOrderedEnumerable<string> mesajeSortate = mesaje.OrderBy(x => x.Length);
 
-                report.DORINTA1 = dorinte[0].Trim('\n');
-                report.DORINTA2 = dorinte[1].Trim('\n');
+                //Taie randurile noi de la final
+                //TODO VALIDARE LISTE CU MESAJE
 
-                report.MESAJ1 = mesaje[0].Trim('\n');
-                report.MESAJ2 = mesaje[1].Trim('\n');
+                report.DORINTE = dorinteSortate.ToList();
+                //report.DORINTE = string.Join("\"\n\"", dorinte);
+                //report.DORINTA1 = dorinte[0].Trim('\n');
+                //report.DORINTA2 = dorinte[1].Trim('\n');
 
+                report.MESAJE = mesajeSortate.ToList();
+                //report.MESAJE = string.Join("\"\n\"", mesaje);
+                //report.MESAJ1 = mesaje[0].Trim('\n');
+                //report.MESAJ2 = mesaje[1].Trim('\n');
+
+                //Selecteaza cheia de dictionar cu valoarea cea mai mare
                 report.PROCENTPARTICIPARE = (from entry in prezenta orderby entry.Value descending select entry).First().Key.ToLower();
 
-                //MessageBox.Show($"{disciplina} {localRecords.Count()}");
+                //Trimite raportul catre generare
                 ReportController.GenerateReport(report);
             }
-
-            
 
             MessageBox.Show("DONE");
         }
 
-
+        //Assume sorted list
+        private static string getLongest2MessagesConcatenated(List<string> list)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("\"");
+            if(list.Count >= 2)
+            {
+                sb.Append(list[0]);
+                sb.Append("\"\n\"");
+                sb.Append(list[1]);
+                sb.Append("\"\n");
+                return sb.ToString();
+            } else if (list.Count == 1)
+            {
+                sb.Append(list[0]);
+                sb.Append("\"\n");
+                return sb.ToString();
+            } else
+            {
+                return "Elevii nu au transmis mesaje acestui profesor.";
+            }
+        }
     }
 }

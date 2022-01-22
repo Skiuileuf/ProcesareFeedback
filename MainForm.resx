@@ -123,14 +123,6 @@
   <metadata name="saveFileDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>150, 17</value>
   </metadata>
-  <data name="label9.Text" xml:space="preserve">
-    <value>Alege un Model pentru raport, un folder in care sa genereze rezultatul si daca toate rezultatele se vor combina intr-un singur fisier, apoi apasa genereaza.
-
-Un Template este un fisier in Microsoft Word care contine etichete specifice de forma &lt;%=Model.NUMEVARIABILA %&gt;
-Nume valide pentru variabile sunt: NCLASA, LCLASA, ANSCOLAR, SEMESTRU, NRELEVI, NRFEEDBACK, DIRIGINTE, PROFESOR, DISCIPLINA, PROCENTPARTICIPARE, DORINTA1, DORINTA2, MESAJ1, MESAJ2.
-De asemenea, orice expresie valida in C# poate inlocui NUMEVARIABILA in eticheta specifica (de exemplu &lt;%=DateTime.Now.ToString()%&gt;
-Functia Model.GetNumValue() returneaza valoarea din tabelul de calificative.</value>
-  </data>
   <data name="label8.Text" xml:space="preserve">
     <value>Selecteaza valorile constante
 N Clasa: Numele/Numarul clasei - exemplu: V, XII, Pregatitoare
@@ -140,6 +132,14 @@ Semestru: Semestrul pentru care se face raportul - ex: I, II
 Nr Elevi: Numarul de elevi in clasa descrisa mai sus
 Diriginte: Numele dirigintelui clasei descrise mai sus
 </value>
+  </data>
+  <data name="label9.Text" xml:space="preserve">
+    <value>Alege un Model pentru raport, un folder in care sa genereze rezultatul si daca toate rezultatele se vor combina intr-un singur fisier, apoi apasa genereaza.
+
+Un Template este un fisier in Microsoft Word care contine etichete specifice de forma &lt;%=Model.NUMEVARIABILA %&gt;
+Nume valide pentru variabile sunt: NCLASA, LCLASA, ANSCOLAR, SEMESTRU, NRELEVI, NRFEEDBACK, DIRIGINTE, PROFESOR, DISCIPLINA, PROCENTPARTICIPARE, DORINTA1, DORINTA2, MESAJ1, MESAJ2.
+De asemenea, orice expresie valida in C# poate inlocui NUMEVARIABILA in eticheta specifica (de exemplu &lt;%=DateTime.Now.ToString()%&gt;
+Functia Model.GetNumValue() returneaza valoarea din tabelul de calificative.</value>
   </data>
   <metadata name="folderBrowserDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>279, 17</value>
