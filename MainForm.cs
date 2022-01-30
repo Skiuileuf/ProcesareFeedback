@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClosedXML.Excel;
@@ -35,6 +36,7 @@ namespace ProcesareFeedback
                 ExcelPath = openFileDialog.FileName;
                 pathBox.Text = ExcelPath;
                 generateButton.Enabled = File.Exists(ExcelPath);
+                ParseFileName(ExcelPath);
             }
         }
 
@@ -48,6 +50,7 @@ namespace ProcesareFeedback
             SortedSet<string> discipline = new SortedSet<string>();
 
             List<string> intrebari = new List<string>();
+            //Orice intrebare incepe cu [ deci de luat in considerare in viitor
             for(int i = 3; i <= 18; i++)
             {
                 intrebari.Add(ep.WorkSheet.Cell(1, i).GetString());
@@ -129,22 +132,31 @@ namespace ProcesareFeedback
                     }
                 }
 
+                //calculare medii aritmetice
+                for (int i = 0; i < report.numere.GetLength(0); i++)
+                {
+                    double mediaLocala = 0;
+                    for (int j = 0; j < report.numere.GetLength(1); j++)
+                    {
+                        mediaLocala += report.numere[i, j] * (j+1);
+                    }
+                    if (i > 0 && i <= 4) report.MEDIEPREDARE += mediaLocala;
+                    if (i > 4 && i <= 11) report.MEDIEATMOSFERA += mediaLocala;
+                    if (i > 11 && i <= 15) report.MEDIESTATUT += mediaLocala;
+
+                }
+
+                report.MEDIEPREDARE /= 5 * int.Parse(report.NRFEEDBACK);
+                report.MEDIEATMOSFERA /= 7 * int.Parse(report.NRFEEDBACK);
+                report.MEDIESTATUT /= 4 * int.Parse(report.NRFEEDBACK);
+
                 //Sorteaza dorintele si mesajele
                 IOrderedEnumerable<string> dorinteSortate = dorinte.OrderBy(x => x.Length);
                 IOrderedEnumerable<string> mesajeSortate = mesaje.OrderBy(x => x.Length);
 
-                //Taie randurile noi de la final
-                //TODO VALIDARE LISTE CU MESAJE
-
                 report.DORINTE = dorinteSortate.ToList();
-                //report.DORINTE = string.Join("\"\n\"", dorinte);
-                //report.DORINTA1 = dorinte[0].Trim('\n');
-                //report.DORINTA2 = dorinte[1].Trim('\n');
 
                 report.MESAJE = mesajeSortate.ToList();
-                //report.MESAJE = string.Join("\"\n\"", mesaje);
-                //report.MESAJ1 = mesaje[0].Trim('\n');
-                //report.MESAJ2 = mesaje[1].Trim('\n');
 
                 //Selecteaza cheia de dictionar cu valoarea cea mai mare
                 report.PROCENTPARTICIPARE = (from entry in prezenta orderby entry.Value descending select entry).First().Key.ToLower();
@@ -156,27 +168,30 @@ namespace ProcesareFeedback
             MessageBox.Show("DONE");
         }
 
-        //Assume sorted list
-        private static string getLongest2MessagesConcatenated(List<string> list)
+        public void ParseFileName(string path)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("\"");
-            if(list.Count >= 2)
-            {
-                sb.Append(list[0]);
-                sb.Append("\"\n\"");
-                sb.Append(list[1]);
-                sb.Append("\"\n");
-                return sb.ToString();
-            } else if (list.Count == 1)
-            {
-                sb.Append(list[0]);
-                sb.Append("\"\n");
-                return sb.ToString();
-            } else
-            {
-                return "Elevii nu au transmis mesaje acestui profesor.";
-            }
+            string name = Path.GetFileName(path);
+            //MessageBox.Show(name);
+
+            string PatternClasa = @"(X{0,3})(IX|IV|V?I{0,3})(?=-)";
+            Match clasa = Regex.Match(name, PatternClasa);
+
+            string PatternLitera = @"([A-Z]{1,2}[0-9]{0,1})(?= )";
+            Match litera = Regex.Match(name, PatternLitera);
+
+            string PatternSemestru = @"(I{1,2})(?=,)";
+            Match semestru = Regex.Match(name, PatternSemestru);
+
+            string PatternAnScolar = @"[0-9]{4}-[0-9]{4}";
+            Match anScolar = Regex.Match(name, PatternAnScolar);
+
+
+            //MessageBox.Show($"{name} \n {clasa.Value} {litera.Value} {semestru.Value} {anScolar.Value}");
+
+            nclasa.Text = clasa.Value;
+            lclasa.Text = litera.Value;
+            this.semestru.Text = semestru.Value;
+            this.anscolar.Text = anScolar.Value;
         }
     }
 }

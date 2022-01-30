@@ -12,7 +12,8 @@ namespace ProcesareFeedback
     {
         public static void GenerateReport(TeacherReport report)
         {
-            var ViewPath = $"D:\\Desktop\\Report.cs.docx"; //template.cs.docx
+            //var ViewPath = $"D:\\Desktop\\Report.cs.docx"; //template.cs.docx
+            var ViewPath = $"D:\\Desktop\\ModelRaport.cs.docx"; //template.cs.docx
             var documentFolder = $"D:\\Desktop\\Feedback{report.NCLASA}{report.LCLASA}";
             if (!Directory.Exists(documentFolder)) Directory.CreateDirectory(documentFolder);
             var documentName = $"{report.NCLASA}{report.LCLASA}-{report.DISCIPLINA.ToUpperInvariant()}-{report.PROFESOR}.docx";

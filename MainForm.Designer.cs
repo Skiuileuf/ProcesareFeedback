@@ -86,7 +86,6 @@
             this.nclasa.Name = "nclasa";
             this.nclasa.Size = new System.Drawing.Size(939, 20);
             this.nclasa.TabIndex = 0;
-            this.nclasa.Text = "V";
             // 
             // chooseFileButton
             // 
@@ -125,7 +124,6 @@
             this.lclasa.Name = "lclasa";
             this.lclasa.Size = new System.Drawing.Size(939, 20);
             this.lclasa.TabIndex = 3;
-            this.lclasa.Text = "J";
             // 
             // label3
             // 
@@ -144,7 +142,6 @@
             this.anscolar.Name = "anscolar";
             this.anscolar.Size = new System.Drawing.Size(939, 20);
             this.anscolar.TabIndex = 5;
-            this.anscolar.Text = "2021-2022";
             // 
             // pathBox
             // 
@@ -173,7 +170,6 @@
             this.diriginte.Name = "diriginte";
             this.diriginte.Size = new System.Drawing.Size(939, 20);
             this.diriginte.TabIndex = 9;
-            this.diriginte.Text = "numeprof";
             // 
             // label6
             // 
@@ -192,7 +188,6 @@
             this.nrelevi.Name = "nrelevi";
             this.nrelevi.Size = new System.Drawing.Size(939, 20);
             this.nrelevi.TabIndex = 7;
-            this.nrelevi.Text = "29";
             // 
             // label4
             // 
@@ -211,7 +206,6 @@
             this.semestru.Name = "semestru";
             this.semestru.Size = new System.Drawing.Size(939, 20);
             this.semestru.TabIndex = 12;
-            this.semestru.Text = "I";
             // 
             // generateButton
             // 

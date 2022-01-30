@@ -131,7 +131,8 @@ An Scolar: Anul scolar pentru care se face raportul - ex: 2021-2022
 Semestru: Semestrul pentru care se face raportul - ex: I, II
 Nr Elevi: Numarul de elevi in clasa descrisa mai sus
 Diriginte: Numele dirigintelui clasei descrise mai sus
-</value>
+Programul va incerca sa completeze automat anumite informatii, in functie de numele fisierului incarcat in program..
+.</value>
   </data>
   <data name="label9.Text" xml:space="preserve">
     <value>Alege un Model pentru raport, un folder in care sa genereze rezultatul si daca toate rezultatele se vor combina intr-un singur fisier, apoi apasa genereaza.

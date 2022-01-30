@@ -29,6 +29,9 @@ namespace ProcesareFeedback
         //cele mai lungi doua mesaje pentru profesor din lista de mesaje
         public List<string> MESAJE;
 
+        public double MEDIEPREDARE;
+        public double MEDIEATMOSFERA;
+        public double MEDIESTATUT;
 
         //procentul de participare al elevilor
         public string PROCENTPARTICIPARE;
@@ -64,6 +67,21 @@ namespace ProcesareFeedback
             string q = intrebari[questionIndex].Trim().Trim(new char[] { '[', ']' });
             questionIndex++;
             return q;
+        }
+
+        public string Masura(double a)
+        {
+            // intr-o ... masura
+            string result = "INVALID EROARE CALCUL ASTA NU TREBUIE SA APARA NICIUNDE";
+
+            if (a > 0 && a <= 1) result = "foarte mica";
+            if (a > 1 && a <= 2) result = "mica";
+            if (a > 2 && a <= 3) result = "oarecare";
+            if (a > 3 && a <= 4) result = "mare";
+            if (a > 4 && a <= 5) result = "foarte mare";
+
+
+            return result;
         }
     }
 }
