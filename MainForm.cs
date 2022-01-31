@@ -26,22 +26,33 @@ namespace ProcesareFeedback
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-
+            errorProvider.Icon = SystemIcons.Warning;
         }
 
         private void chooseFileButton_Click(object sender, EventArgs e)
         {
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            progressBar.Style = ProgressBarStyle.Marquee;
+            
+            if (openFileDialog.ShowDialog() != DialogResult.OK)
             {
-                ExcelPath = openFileDialog.FileName;
-                pathBox.Text = ExcelPath;
-                generateButton.Enabled = File.Exists(ExcelPath);
-                ParseFileName(ExcelPath);
+                MessageBox.Show("Nu a fost ales un fisier.", "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                progressBar.Style = ProgressBarStyle.Blocks;
+                return;
             }
+
+            ExcelPath = openFileDialog.FileName;
+            pathBox.Text = ExcelPath;
+            generateButton.Enabled = File.Exists(ExcelPath);
+
+            ParseFileName(ExcelPath);
+
+            progressBar.Style = ProgressBarStyle.Blocks;
         }
 
         private void generateButton_Click(object sender, EventArgs e)
         {
+            //PARTEA DE PROCESARE A DATELOR
+
             ExcelProcessor ep = new ExcelProcessor(ExcelPath);
 
             //Make a list of all the records parsed from the excel file
@@ -78,6 +89,9 @@ namespace ProcesareFeedback
                 discipline.Add(record.Disciplina);
             }
 
+            //PARTE ASAMBLARE RAPOARTE
+
+            List<TeacherReport> reports = new List<TeacherReport>();
 
             //Pentru fiecare materie diferita
             foreach (string disciplina in discipline)
@@ -161,31 +175,40 @@ namespace ProcesareFeedback
                 //Selecteaza cheia de dictionar cu valoarea cea mai mare
                 report.PROCENTPARTICIPARE = (from entry in prezenta orderby entry.Value descending select entry).First().Key.ToLower();
 
+                reports.Add(report);
+
                 //Trimite raportul catre generare
-                ReportController.GenerateReport(report);
+                //ReportController.GenerateReport(report);
             }
 
-            MessageBox.Show("DONE");
+            documentWorker.RunWorkerAsync(reports);
+
+            //MessageBox.Show("DONE");
         }
 
         public void ParseFileName(string path)
         {
             string name = Path.GetFileName(path);
-            //MessageBox.Show(name);
 
+            //Numar roman < 15 urmat de '-' - e posibil sa nu mearga in alte circumstante
             string PatternClasa = @"(X{0,3})(IX|IV|V?I{0,3})(?=-)";
             Match clasa = Regex.Match(name, PatternClasa);
+            if (!clasa.Success) errorProvider.SetError(nclasa, "Nu s-a putut completa automat");
 
+            //Intre 1 si 2 majuscule urmate de 0 sau 1 cifra
             string PatternLitera = @"([A-Z]{1,2}[0-9]{0,1})(?= )";
             Match litera = Regex.Match(name, PatternLitera);
+            if (!litera.Success) errorProvider.SetError(lclasa, "Nu s-a putut completa automat");
 
+            //Intre 1 si 2 'I' urmati de o virgula
             string PatternSemestru = @"(I{1,2})(?=,)";
             Match semestru = Regex.Match(name, PatternSemestru);
+            if (!semestru.Success) errorProvider.SetError(this.semestru, "Nu s-a putut completa automat");
 
+            //2 numere de 4 cifre despartite cu o linie
             string PatternAnScolar = @"[0-9]{4}-[0-9]{4}";
             Match anScolar = Regex.Match(name, PatternAnScolar);
-
-            //MessageBox.Show($"{name} \n {clasa.Value} {litera.Value} {semestru.Value} {anScolar.Value}");
+            if (!anScolar.Success) errorProvider.SetError(anscolar, "Nu s-a putut completa automat");
 
             nclasa.Text = clasa.Value;
             lclasa.Text = litera.Value;
@@ -193,9 +216,25 @@ namespace ProcesareFeedback
             this.anscolar.Text = anScolar.Value;
         }
 
-        private void tabUpload_Click(object sender, EventArgs e)
+        private void documentWorker_DoWork(object sender, DoWorkEventArgs e)
         {
+            List<TeacherReport> reports = (List<TeacherReport>)e.Argument;
+            for(int i = 0; i < reports.Count; i++)
+            {
+                ReportController.GenerateReport(reports[i]);
+                int percentage = (i + 1) * 100 / reports.Count;
+                documentWorker.ReportProgress(percentage);
+            }
+        }
 
+        private void documentWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressBar.Value = e.ProgressPercentage;
+        }
+
+        private void documentWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            MessageBox.Show("Rapoartele au fost generate!", "Gata!", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

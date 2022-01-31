@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.nclasa = new System.Windows.Forms.TextBox();
@@ -47,6 +48,9 @@
             this.generateButton = new System.Windows.Forms.Button();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label8 = new System.Windows.Forms.Label();
@@ -62,11 +66,13 @@
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.progressGroupBox = new System.Windows.Forms.GroupBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
-            this.fileLoaderWorker = new System.ComponentModel.BackgroundWorker();
+            this.documentWorker = new System.ComponentModel.BackgroundWorker();
+            this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.progressGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.SuspendLayout();
             // 
             // openFileDialog
@@ -80,14 +86,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.nclasa.Location = new System.Drawing.Point(119, 133);
             this.nclasa.Name = "nclasa";
-            this.nclasa.Size = new System.Drawing.Size(579, 20);
+            this.nclasa.Size = new System.Drawing.Size(457, 20);
             this.nclasa.TabIndex = 0;
             // 
             // chooseFileButton
             // 
             this.chooseFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.chooseFileButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.chooseFileButton.Location = new System.Drawing.Point(188, 269);
+            this.chooseFileButton.Location = new System.Drawing.Point(313, 269);
             this.chooseFileButton.Name = "chooseFileButton";
             this.chooseFileButton.Size = new System.Drawing.Size(75, 23);
             this.chooseFileButton.TabIndex = 1;
@@ -119,7 +125,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lclasa.Location = new System.Drawing.Point(119, 159);
             this.lclasa.Name = "lclasa";
-            this.lclasa.Size = new System.Drawing.Size(579, 20);
+            this.lclasa.Size = new System.Drawing.Size(457, 20);
             this.lclasa.TabIndex = 3;
             // 
             // label3
@@ -137,7 +143,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.anscolar.Location = new System.Drawing.Point(119, 185);
             this.anscolar.Name = "anscolar";
-            this.anscolar.Size = new System.Drawing.Size(579, 20);
+            this.anscolar.Size = new System.Drawing.Size(457, 20);
             this.anscolar.TabIndex = 5;
             // 
             // pathBox
@@ -147,7 +153,7 @@
             this.pathBox.Location = new System.Drawing.Point(6, 271);
             this.pathBox.Name = "pathBox";
             this.pathBox.ReadOnly = true;
-            this.pathBox.Size = new System.Drawing.Size(176, 20);
+            this.pathBox.Size = new System.Drawing.Size(301, 20);
             this.pathBox.TabIndex = 11;
             // 
             // label5
@@ -165,7 +171,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.diriginte.Location = new System.Drawing.Point(119, 263);
             this.diriginte.Name = "diriginte";
-            this.diriginte.Size = new System.Drawing.Size(579, 20);
+            this.diriginte.Size = new System.Drawing.Size(457, 20);
             this.diriginte.TabIndex = 9;
             // 
             // label6
@@ -183,7 +189,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.nrelevi.Location = new System.Drawing.Point(119, 237);
             this.nrelevi.Name = "nrelevi";
-            this.nrelevi.Size = new System.Drawing.Size(579, 20);
+            this.nrelevi.Size = new System.Drawing.Size(457, 20);
             this.nrelevi.TabIndex = 7;
             // 
             // label4
@@ -201,14 +207,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.semestru.Location = new System.Drawing.Point(119, 211);
             this.semestru.Name = "semestru";
-            this.semestru.Size = new System.Drawing.Size(579, 20);
+            this.semestru.Size = new System.Drawing.Size(457, 20);
             this.semestru.TabIndex = 12;
             // 
             // generateButton
             // 
             this.generateButton.Enabled = false;
             this.generateButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.generateButton.Location = new System.Drawing.Point(319, 97);
+            this.generateButton.Location = new System.Drawing.Point(313, 97);
             this.generateButton.Name = "generateButton";
             this.generateButton.Size = new System.Drawing.Size(75, 23);
             this.generateButton.TabIndex = 14;
@@ -218,22 +224,53 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label14);
+            this.groupBox1.Controls.Add(this.label13);
+            this.groupBox1.Controls.Add(this.label12);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.chooseFileButton);
             this.groupBox1.Controls.Add(this.pathBox);
             this.groupBox1.Location = new System.Drawing.Point(12, 49);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(269, 298);
+            this.groupBox1.Size = new System.Drawing.Size(394, 298);
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "1. Incarcare";
             // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(6, 95);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(210, 13);
+            this.label14.TabIndex = 14;
+            this.label14.Text = "Majoritatea elevilor au fost prezenti la % ore";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(6, 82);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(282, 13);
+            this.label13.TabIndex = 13;
+            this.label13.Text = "In medie fiecare elev a acordat feedback catre N profesori";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(6, 69);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(127, 13);
+            this.label12.TabIndex = 12;
+            this.label12.Text = "Se vor genera N rapoarte";
+            // 
             // label7
             // 
-            this.label7.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label7.Location = new System.Drawing.Point(3, 16);
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label7.Location = new System.Drawing.Point(6, 16);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(263, 49);
+            this.label7.Size = new System.Drawing.Size(382, 31);
             this.label7.TabIndex = 0;
             this.label7.Text = "Adauga aici fisierul .xlsx descarcat din Google Forms!\r\nApasa pe \"Selecteaza...\"\r" +
     "\n";
@@ -255,9 +292,9 @@
             this.groupBox2.Controls.Add(this.diriginte);
             this.groupBox2.Controls.Add(this.nrelevi);
             this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Location = new System.Drawing.Point(287, 49);
+            this.groupBox2.Location = new System.Drawing.Point(409, 49);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(705, 298);
+            this.groupBox2.Size = new System.Drawing.Size(583, 298);
             this.groupBox2.TabIndex = 16;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "2. Parametri";
@@ -267,7 +304,7 @@
             this.label8.Dock = System.Windows.Forms.DockStyle.Top;
             this.label8.Location = new System.Drawing.Point(3, 16);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(699, 104);
+            this.label8.Size = new System.Drawing.Size(577, 104);
             this.label8.TabIndex = 12;
             this.label8.Text = resources.GetString("label8.Text");
             // 
@@ -314,7 +351,7 @@
             // 
             // destinationFolderBrowseButton
             // 
-            this.destinationFolderBrowseButton.Location = new System.Drawing.Point(319, 70);
+            this.destinationFolderBrowseButton.Location = new System.Drawing.Point(313, 71);
             this.destinationFolderBrowseButton.Name = "destinationFolderBrowseButton";
             this.destinationFolderBrowseButton.Size = new System.Drawing.Size(75, 22);
             this.destinationFolderBrowseButton.TabIndex = 19;
@@ -326,7 +363,7 @@
             this.destinationFolderPath.Location = new System.Drawing.Point(6, 71);
             this.destinationFolderPath.Name = "destinationFolderPath";
             this.destinationFolderPath.ReadOnly = true;
-            this.destinationFolderPath.Size = new System.Drawing.Size(308, 20);
+            this.destinationFolderPath.Size = new System.Drawing.Size(301, 20);
             this.destinationFolderPath.TabIndex = 20;
             // 
             // label10
@@ -340,15 +377,15 @@
             // 
             // label9
             // 
-            this.label9.Location = new System.Drawing.Point(394, 16);
+            this.label9.Location = new System.Drawing.Point(403, 16);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(579, 177);
+            this.label9.Size = new System.Drawing.Size(570, 177);
             this.label9.TabIndex = 17;
             this.label9.Text = resources.GetString("label9.Text");
             // 
             // templateBrowseButton
             // 
-            this.templateBrowseButton.Location = new System.Drawing.Point(319, 31);
+            this.templateBrowseButton.Location = new System.Drawing.Point(313, 30);
             this.templateBrowseButton.Name = "templateBrowseButton";
             this.templateBrowseButton.Size = new System.Drawing.Size(75, 22);
             this.templateBrowseButton.TabIndex = 15;
@@ -360,7 +397,7 @@
             this.templatePath.Location = new System.Drawing.Point(6, 32);
             this.templatePath.Name = "templatePath";
             this.templatePath.ReadOnly = true;
-            this.templatePath.Size = new System.Drawing.Size(307, 20);
+            this.templatePath.Size = new System.Drawing.Size(301, 20);
             this.templatePath.TabIndex = 16;
             // 
             // folderBrowserDialog
@@ -387,6 +424,18 @@
             this.progressBar.Size = new System.Drawing.Size(974, 23);
             this.progressBar.TabIndex = 0;
             // 
+            // documentWorker
+            // 
+            this.documentWorker.WorkerReportsProgress = true;
+            this.documentWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.documentWorker_DoWork);
+            this.documentWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.documentWorker_ProgressChanged);
+            this.documentWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.documentWorker_RunWorkerCompleted);
+            // 
+            // errorProvider
+            // 
+            this.errorProvider.ContainerControl = this;
+            this.errorProvider.RightToLeft = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -396,6 +445,7 @@
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(1020, 600);
             this.Name = "MainForm";
             this.Text = "ProcesareFeedback";
@@ -407,6 +457,7 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.progressGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -446,7 +497,11 @@
         private System.Windows.Forms.TextBox destinationFolderPath;
         private System.Windows.Forms.GroupBox progressGroupBox;
         private System.Windows.Forms.ProgressBar progressBar;
-        private System.ComponentModel.BackgroundWorker fileLoaderWorker;
+        private System.ComponentModel.BackgroundWorker documentWorker;
+        private System.Windows.Forms.ErrorProvider errorProvider;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label13;
     }
 }
 
