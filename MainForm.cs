@@ -185,13 +185,17 @@ namespace ProcesareFeedback
             string PatternAnScolar = @"[0-9]{4}-[0-9]{4}";
             Match anScolar = Regex.Match(name, PatternAnScolar);
 
-
             //MessageBox.Show($"{name} \n {clasa.Value} {litera.Value} {semestru.Value} {anScolar.Value}");
 
             nclasa.Text = clasa.Value;
             lclasa.Text = litera.Value;
             this.semestru.Text = semestru.Value;
             this.anscolar.Text = anScolar.Value;
+        }
+
+        private void tabUpload_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
